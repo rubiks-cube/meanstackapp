@@ -9,10 +9,10 @@
     <label>Password:</label>
 	<input class="form-control" name:"password" type="password" placeholder="Enter  passsword" ng-model="main.loginData.password" >
 	<br>
-	<button class="btn btn-primary"  type="submit">Login</button>
-
-
-
+	<button class="btn btn-success"  type="submit">Login</button>&nbsp
+	<button class="btn btn-primary"  type="button" ng-click="main.facebook();">Facebook</button>
+  <!-- <button class="btn btn-warning"  type="button" ng-click="main.twitter();">Twitter</button>-->
+<button class="btn btn-danger"  type="button" ng-click="main.google();">Google+</button>
 </form>
 
 <div class="jumbotron text-center" ng-show="register.loading">
@@ -34,4 +34,12 @@
 	<div class="row show-hide-message" ng-show="main.failmsg">
 
 	<div class="alert alert-danger">{{main.failmsg}}</div>
+	</div>
+	<div class="row show-hide-message" ng-show="facebook.errorMsg">
+
+	<div class="alert alert-danger">{{facebook.errorMsg}}</div>
+	</div>
+	<div class="row show-hide-message" ng-show="google.errorMsg">
+
+	<div class="alert alert-danger">{{google.errorMsg}}</div>
 	</div>

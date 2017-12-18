@@ -1,4 +1,4 @@
-angular.module('userControllers',['userServices'])
+angular.module('userControllers',['userServices','authServices'])
 .controller('regCtrl',function($http,$location,$timeout,User){
 //this is limited to scope;
 	var thisobj=this;
@@ -28,5 +28,33 @@ thisobj.successmsg=false;
 });
 
 };
+
+})
+
+.controller('facebookCtrl', function($routeParams, Auth, $location, $window,){
+//console.log($routeParams.token);
+var thisobj=this;
+if($window.location.pathname=='/facebookerror'){
+thisobj.errorMsg='Facebook account not recognised';
+}
+else{
+Auth.facebook($routeParams.token);
+//console.log(user);
+$location.path('/about');
+}
+
+})
+
+
+.controller('googleCtrl', function($routeParams, Auth, $location, $window){
+//console.log($routeParams.token);
+var thisobj=this;
+if($window.location.pathname=='/googleerror'){
+thisobj.errorMsg='google account not recognised';
+}
+else{
+Auth.google($routeParams.token);
+$location.path('/');
+}
 
 });

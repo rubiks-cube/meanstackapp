@@ -6,7 +6,8 @@ var bodyparser=require('body-parser');
 var port=process.env.PORT||3000;
 var approutes=require('./app/routes/api');
 var path=require('path');
-
+var passport=require('passport');
+var social=require('./app/passport/passport')(app, passport);
 
 app.use(bodyparser.json());
 app.use(morgan('dev'));

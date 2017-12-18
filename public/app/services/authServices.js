@@ -21,6 +21,21 @@ authFactory.isLoggedIn=function(){
 //Auth GetUser
    
 };
+//Auth.facebook(token)
+authFactory.facebook=function(token){
+
+  AuthToken.setToken(token);
+};
+
+
+authFactory.google=function(token){
+	//console.log(token);
+  //console.log('mooo');
+  AuthToken.setToken(token);
+};
+
+
+
 authFactory.getUser=function(){
 	if(AuthToken.getToken()){
 
@@ -62,6 +77,7 @@ var authInterceptorFactory={};
 
 authInterceptorFactory.request=function(config){
 var token= AuthToken.getToken();
+//console.log('popo'+token);
 if(token){
 	      config.headers['x-access-token']=token;
    }

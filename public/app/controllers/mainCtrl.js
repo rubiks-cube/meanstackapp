@@ -1,9 +1,9 @@
 angular.module('mainController',['authServices'])
-.controller('mainCtrl',function(Auth,$timeout,$location,$rootScope){
+.controller('mainCtrl',function(Auth,$timeout,$location,$rootScope,$window){
 var thisobj=this;
 
 //load angularornot
-thisobj.loadme=false;
+//thisobj.loadme=false;
 //new view after logout
 
 $rootScope.$on('$routeChangeStart',function(){
@@ -15,7 +15,9 @@ if(Auth.isLoggedIn()){
 		//console.log(data);
 		thisobj.username= data.data.username;
 		thisobj.usermail=data.data.email;
-		thisobj.loadme=true;
+		//thisobj.loadme=true;
+
+
 	});
 
 }
@@ -23,16 +25,27 @@ else{
 	//console.log('not');
 	thisobj.username='';
 	thisobj.isLoggedIn=false;
-	thisobj.loadme=true;
+	//thisobj.loadme=true;
  }
+if($location.hash() == '#_=_') {$location.hash(null);}
 
 	});
 
 
 
+this.facebook=function(){
+console.log($window.location.protocol);
+console.log($window.location.host);
+$window.location=$window.location.protocol+'//' +$window.location.host+'/auth/facebook';
+};
 
 
 
+
+this.google=function(){
+
+$window.location=$window.location.protocol+'//' +$window.location.host+'/auth/google';
+};
 
 thisobj.doLogin=function(loginData)
 {
@@ -63,7 +76,7 @@ thisobj.successmsg=false;
 
 };
 
-this.logOut=function(){
+thisobj.logOut=function(){
  Auth.logOut();
 $location.path('/logout');
 $timeout(function(){
@@ -71,3 +84,8 @@ $location.path('/');},4000
 );
 };
 });
+
+
+
+
+
