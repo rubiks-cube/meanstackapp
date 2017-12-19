@@ -34,6 +34,11 @@ authFactory.google=function(token){
   AuthToken.setToken(token);
 };
 
+authFactory.twitter=function(token){
+	//console.log(token);
+  //console.log('mooo');
+  AuthToken.setToken(token);
+};
 
 
 authFactory.getUser=function(){

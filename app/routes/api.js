@@ -12,7 +12,8 @@ router.post('/users',function(req,res){
    user.username=req.body.username;
     user.email=req.body.email; 
     user.password=req.body.password;
-  if(req.body.username==null||req.body.useranme==''||req.body.password==null||req.body.password==''||req.body.email==null||req.body.email==''){
+    user.name=req.body.name;
+  if(req.body.username==null||req.body.useranme==''||req.body.password==null||req.body.password==''||req.body.email==null||req.body.email==''||req.body.name==null||req.body.name==''){
     res.json({success:false, message:'Missing Fields'});
 
     //console.log('missing');
@@ -21,7 +22,47 @@ router.post('/users',function(req,res){
 else{
      user.save(function(err)
      {//console.log('save');
-      if(err){res.json({success:false, message:'Already Exists'});}
+         if(err){
+
+           if(err.errors!=null){
+
+  
+               if(err.errors.name){
+                 res.json({success:false, message:err.errors.name.message});}
+
+                 else if(err.errors.email){
+                res.json({success:false, message:err.errors.email.message});}
+
+                 else if(err.errors.username){
+                  res.json({success:false, message:err.errors.username.message});}
+
+                  else if(err.errors.password){
+                  res.json({success:false, message:err.errors.password.message});}
+                   else{
+                   res.json({success:false,message:err});}
+               }
+
+
+              else if(err){
+                   if(err.code==11000){
+                    if(err.errmsg[60]=='u'){
+                     res.json({success:false,message:'User already exists'});}
+                     if(err.errmsg[60]=='e')
+                     {
+                       res.json({success:false,message:'Email already exists'});
+                     }
+                    }
+
+                     
+                  }
+                   else{
+                     res.json({success:false,message:err});
+                    }
+                   
+              }
+            
+          
+
         else{
           res.json({success:true, message:'Added'});
           }

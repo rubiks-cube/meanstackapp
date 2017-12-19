@@ -59,6 +59,20 @@ var app=angular.module('appRoutes', ['ngRoute','authServices'])
 		controllerAs: 'google',
 		authenticated:false
 	})
+
+
+	.when('/twitter/:token',{
+		templateUrl: "app/views/pages/users/social/social.html",
+		controller:'twitterCtrl',
+		controllerAs: 'twitter',
+		authenticated:false
+	})
+	.when('/twittererror',{
+		templateUrl: "app/views/pages/users/login.html",
+		controller:'twitterCtrl',
+		controllerAs: 'twitter',
+		authenticated:false
+	})
 	.otherwise({redirectTo:'/'});
 });
 

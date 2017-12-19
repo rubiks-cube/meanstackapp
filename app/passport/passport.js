@@ -62,21 +62,28 @@ module.exports=function(app,passport){
   }
     ));
 
-/*
+
    passport.use(new TwitterStrategy({
-    consumerKey: ' QVRvSWCWJ43qMN2QPdpGSxTmP',
+    consumerKey: 'QVRvSWCWJ43qMN2QPdpGSxTmP',
     consumerSecret: 'wcBPXM1Co9w7LSy2QnkkdCpF0dTD4fphkxZ7cI4BuGYF5BkWzF',
     callbackURL: "http://localhost:3000/auth/twitter/callback",
      userProfileURL: "https://api.twitter.com/1.1/account/verify_credentials.json?include_email=true"
   },
   function(token, tokenSecret, profile, done) {
-    console.log(profile);
-    done(null,profile);
-   
+     User.findOne({ email: profile.emails[0].value}).select('username password email').exec(function(err,user){
+         if (err)  done(err);
+
+                if (user && user != null) {
+                  console.log(user);
+                      done(null, user);
+                } else {
+                     done(err);
+                }
+            });//done(null,profile);
   }
    ));
 
-*/
+
 
 passport.use(new GoogleStrategy({
     clientID: '351217440159-l2kr2m4to088ac7kbvc49iud30nslrnt.apps.googleusercontent.com',
@@ -109,12 +116,14 @@ app.get('/auth/google/callback', passport.authenticate('google', { failureRedire
    console.log(token);
     res.redirect('/google/' + token);
   });
-/*
+
   app.get('/auth/twitter', passport.authenticate('twitter'));
 
 
-  app.get('/auth/twitter/callback',passport.authenticate('twitter', { failureRedirect: '/twittererror' }));
-*/
+  app.get('/auth/twitter/callback',passport.authenticate('twitter', { failureRedirect: '/twittererror' }),function(req,res){
+    res.redirect('/twitter/'+token);
+  });
+
  app.get('/auth/facebook/callback',passport.authenticate('facebook', { failureRedirect: '/facebookerror'}),function(req, res) {
         res.redirect('/facebook/' + token ); });
   

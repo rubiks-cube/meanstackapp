@@ -3,7 +3,7 @@ angular.module('mainController',['authServices'])
 var thisobj=this;
 
 //load angularornot
-//thisobj.loadme=false;
+thisobj.loadme=false;
 //new view after logout
 
 $rootScope.$on('$routeChangeStart',function(){
@@ -15,7 +15,7 @@ if(Auth.isLoggedIn()){
 		//console.log(data);
 		thisobj.username= data.data.username;
 		thisobj.usermail=data.data.email;
-		//thisobj.loadme=true;
+		thisobj.loadme=true;
 
 
 	});
@@ -25,7 +25,7 @@ else{
 	//console.log('not');
 	thisobj.username='';
 	thisobj.isLoggedIn=false;
-	//thisobj.loadme=true;
+	thisobj.loadme=true;
  }
 if($location.hash() == '#_=_') {$location.hash(null);}
 
@@ -45,6 +45,12 @@ $window.location=$window.location.protocol+'//' +$window.location.host+'/auth/fa
 this.google=function(){
 
 $window.location=$window.location.protocol+'//' +$window.location.host+'/auth/google';
+};
+
+
+this.twitter=function(){
+
+$window.location=$window.location.protocol+'//' +$window.location.host+'/auth/twitter';
 };
 
 thisobj.doLogin=function(loginData)
