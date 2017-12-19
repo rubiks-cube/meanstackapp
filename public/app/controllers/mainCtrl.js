@@ -64,7 +64,7 @@ Auth.login(thisobj.loginData).then(function(data){
 if(data.data.success){
 	thisobj.loading=false;
 thisobj.successmsg=data.data.message+'.......Redirecting...';
-$timeout(function(){$location.path('/about');},2000);
+$timeout(function(){$location.path('/about');},1500);
 thisobj.loginData='';
 thisobj.successmsg=false;
 

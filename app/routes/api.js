@@ -73,6 +73,48 @@ else{
 });
 
 
+
+
+
+
+
+
+
+
+
+
+router.post('/checkusername', function(req,res){ 
+User.findOne({ username: req.body.username }).select('username').exec(function(err, user) { 
+  if(err) throw err;
+  if(user){
+    res.json({success:false,message:'Username already taken'});
+  } 
+  else{
+    res.json({success:true,message:'Valid Username'});
+  }
+
+});
+});
+
+
+router.post('/checkemail', function(req,res){ 
+console.log('kj');
+User.findOne({ email: req.body.email }).select('email').exec(function(err, user) { 
+  if(err) throw err;
+  if(user){
+    console.log('kj');
+    res.json({success:false,message:'Email already taken'});
+  } 
+  else{
+    res.json({success:true,message:'Valid Email'});
+  }
+
+});
+});
+
+
+
+
 //User Authentication
 
 

@@ -35,7 +35,7 @@
    
   </head>
 
-  <body ng-app="userApp" ng-controller="mainCtrl as main"   >
+  <body ng-app="userApp" ng-controller="mainCtrl as main"  ng-show="main.loadme" ng-cloak>
     <!-- Fixed navbar -->
     
     <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -67,7 +67,7 @@
                 <li><a href="#">One more separated link</a></li>
               </ul>
             </li>
-            <li ng-show="main.isLoggedIn"><a href='/profile'>HI!{{main.username}}</a></li>
+            <li ng-show="main.isLoggedIn"><a href='/profile'>HI! {{main.username}}</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
