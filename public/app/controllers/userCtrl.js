@@ -3,7 +3,7 @@ angular.module('userControllers',['userServices','authServices'])
 //this is limited to scope;
 	var thisobj=this;
 thisobj.regUser=function(regData,valid)
-{
+{thisobj.disabled=true;
 	thisobj.loading=true;
 thisobj.failmsg=false;
 //console.log(this.regData);
@@ -21,7 +21,7 @@ if(valid){
    else{
   thisobj.loading=false;
    thisobj.failmsg=data.data.message;
-
+   thisobj.disabled=false;
     thisobj.successmsg=false;
    }
 
@@ -29,7 +29,7 @@ if(valid){
 }
 
 else{
-
+thisobj.disabled=false;
 	thisobj.loading=false;
 	thisobj.failmsg='Ensure form is filled properly';
 }
@@ -62,7 +62,7 @@ else{
 //User.checkEmail
 
 thisobj.checkEmail=function(regData){
-console.log('hhhhhhh');
+//console.log('hhhhhhh');
 	thisobj.checkingEmail=true;
 	thisobj.emailInvalid=false;
 	thisobj.emailMsg=false;
@@ -121,8 +121,16 @@ else{
 .controller('facebookCtrl', function($routeParams, Auth, $location, $window,){
 //console.log($routeParams.token);
 var thisobj=this;
+thisobj.errorMsg=false;
+thisobj.expired=false;
+thisobj.disabled=true;
 if($window.location.pathname=='/facebookerror'){
 thisobj.errorMsg='Facebook account not recognised';
+}
+else if($window.location.pathname=='/facebook/inactive/error'){
+thisobj.errorMsg='Account not  activated..check your email!';
+thisobj.expired=true;
+
 }
 else{
 Auth.facebook($routeParams.token);
@@ -135,9 +143,15 @@ $location.path('/about');
 
 .controller('googleCtrl', function($routeParams, Auth, $location, $window){
 //console.log($routeParams.token);
-var thisobj=this;
+var thisobj=this;thisobj.errorMsg=false;
+thisobj.expired=false;
+thisobj.disabled=true;
 if($window.location.pathname=='/googleerror'){
 thisobj.errorMsg='Google account not recognised';
+}else if($window.location.pathname=='/google/inactive/error'){
+thisobj.errorMsg='Account not  activated..check your email!';
+thisobj.expired=true;
+
 }
 else{
 Auth.google($routeParams.token);
@@ -151,8 +165,14 @@ $location.path('/');
 .controller('twitterCtrl', function($routeParams, Auth, $location, $window){
 //console.log($routeParams.token);
 var thisobj=this;
+thisobj.errorMsg=false;
+thisobj.expired=false;
+thisobj.disabled=true;
 if($window.location.pathname=='/twittererror'){
 thisobj.errorMsg='Twitter account not recognised';
+}else if($window.location.pathname=='/twitter/inactive/error'){
+thisobj.errorMsg='Account not  activated..check your email!';
+thisobj.expired=true;
 }
 else{
 Auth.twitter($routeParams.token);

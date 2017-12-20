@@ -19,7 +19,11 @@ module.exports=function(app,passport){
  passport.serializeUser(function(user, done) {
     // If account active, give user token
   //console.log(user);
-  token=jwt.sign({ username: user.username, email: user.email }, secret, { expiresIn: '5h' });
+  if(user.active){
+  token=jwt.sign({ username: user.username, email: user.email }, secret, { expiresIn: '5h' });}
+  else{
+    token='inactive/error';
+  }
   done(null, user.id);
    });
 
@@ -46,7 +50,7 @@ module.exports=function(app,passport){
    //null=no error,profile=fb profile
   // console.log(profile._json.email);
   
-   User.findOne({ email: profile._json.email}).select('username email').exec(function(err,user){
+   User.findOne({ email: profile._json.email}).select('username active email').exec(function(err,user){
          if (err)  done(err);
 
                 if (user && user != null) {
@@ -70,7 +74,7 @@ module.exports=function(app,passport){
      userProfileURL: "https://api.twitter.com/1.1/account/verify_credentials.json?include_email=true"
   },
   function(token, tokenSecret, profile, done) {
-     User.findOne({ email: profile.emails[0].value}).select('username password email').exec(function(err,user){
+     User.findOne({ email: profile.emails[0].value}).select('username active password email').exec(function(err,user){
          if (err)  done(err);
 
                 if (user && user != null) {
@@ -95,7 +99,7 @@ passport.use(new GoogleStrategy({
         // console.log(profile); 
        //});
 
-     User.findOne({ email: profile.emails[0].value}).select('username password email').exec(function(err,user){
+     User.findOne({ email: profile.emails[0].value}).select('username active password email').exec(function(err,user){
          if (err)  done(err);
 
                 if (user && user != null) {
@@ -113,7 +117,7 @@ app.get('/auth/google',passport.authenticate('google', { scope: ['https://www.go
 
 
 app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/googleerror' }),function(req, res) {
-   console.log(token);
+  // console.log(token);
     res.redirect('/google/' + token);
   });
 

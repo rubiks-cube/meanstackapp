@@ -62,14 +62,18 @@ var passwordValidator = [
 var UserSchema = new Schema({
   name:{type:String,  required:true,validate: nameValidator},
   username: {type:String, lowercase:true, required:true, unique:true,validate: userValidator},
-  password: {type:String, required:true,validate: passwordValidator},
-  email:{type:String, lowercase:true, required:true, unique:true,validate: emailValidator}
+  password: {type:String, required:true,validate: passwordValidator, select:false},
+  email:{type:String, lowercase:true, required:true, unique:true,validate: emailValidator},
+  active:{type: Boolean ,required:true ,default:false},
+  temporarytoken:{type:String,required:true}
+  
    
   
 });
 
 UserSchema.pre('save',function(next){
   var user=this;
+  if(!user.isModified('password')) return next();
   bcrypt.hash(user.password, null, null, function(err, hash) {
     // Store hash in your password DB.
     user.password=hash;

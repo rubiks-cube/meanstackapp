@@ -73,6 +73,40 @@ var app=angular.module('appRoutes', ['ngRoute','authServices'])
 		controllerAs: 'twitter',
 		authenticated:false
 	})
+	.when('/facebook/inactive/error',{
+		templateUrl: "app/views/pages/users/login.html",
+		controller:'facebookCtrl',
+		controllerAs: 'facebook',
+		authenticated:false
+	})
+	.when('/google/inactive/error',{
+		templateUrl: "app/views/pages/users/login.html",
+		controller:'googleCtrl',
+		controllerAs: 'google',
+		authenticated:false
+	})
+	.when('/twitter/inactive/error',{
+		templateUrl: "app/views/pages/users/login.html",
+		controller:'twitterCtrl',
+		controllerAs: 'twitter',
+		authenticated:false
+	})
+	.when('/activate/:token',{
+		//console.log('kkk');
+		templateUrl: "app/views/pages/users/activation/activate.html",
+		controller:'emailCtrl',
+		controllerAs: 'email'
+		
+	})
+	.when('/resend',{
+		//console.log('kkk');
+		templateUrl: "app/views/pages/users/activation/resend.html",
+		controller:'resendCtrl',
+		controllerAs: 'resend'
+
+		
+	})
+
 	.otherwise({redirectTo:'/'});
 });
 

@@ -5,15 +5,16 @@
 <form ng-submit="main.doLogin(loginData);">
 	
 	<label>Username:</label>
-	<input class="form-control" name:"username" type="text" placeholder="Enter  username" ng-model="main.loginData.username">	
+	<input class="form-control" ng-disabled="main.disabled || facebook.disabled ||twitter.disabled || google.disabled" name="username" type="text" placeholder="Enter  username" ng-model="main.loginData.username">	
     <label>Password:</label>
-	<input class="form-control" name:"password" type="password" placeholder="Enter  password" ng-model="main.loginData.password" >
+	<input class="form-control" name="password"  ng-disabled="main.disabled || facebook.disabled ||twitter.disabled || google.disabled" type="password" placeholder="Enter  password" ng-model="main.loginData.password" >
 	<br>
-	<button class="btn btn-success"  type="submit">Login</button>&nbsp
-	<button class="btn btn-primary"  type="button" ng-click="main.facebook();">Facebook</button>
-  <button class="btn btn-info"  type="button" ng-click="main.twitter();">Twitter</button>
-<button class="btn btn-danger"  type="button" ng-click="main.google();">Google+</button>
+	<button class="btn btn-success"   ng-disabled="main.disabled || facebook.disabled ||twitter.disabled || google.disabled" type="submit">Login</button>&nbsp
+	<button class="btn btn-primary"  ng-disabled="main.disabled || facebook.disabled ||twitter.disabled || google.disabled" type="button" ng-click="main.facebook();">Facebook</button>
+  <button class="btn btn-info"  ng-disabled="main.disabled || facebook.disabled ||twitter.disabled || google.disabled" type="button" ng-click="main.twitter();">Twitter</button>
+<button class="btn btn-danger"   ng-disabled="main.disabled || facebook.disabled ||twitter.disabled || google.disabled" type="button" ng-click="main.google();">Google+</button>
 </form>
+<br>
 
 <div class="jumbotron text-center" ng-show="register.loading">
 	
@@ -33,17 +34,18 @@
 
 	<div class="row show-hide-message" ng-show="main.failmsg">
 
-	<div class="alert alert-danger">{{main.failmsg}}</div>
-	</div>
+	<div class="alert alert-danger">{{main.failmsg}} &nbsp <a ng-show="main.expired" href="/resend"><button class="btn btn-warning"  type="button" >Resend Activation Email..</button></a>
+</div>
+	</div><br>
 	<div class="row show-hide-message" ng-show="facebook.errorMsg">
 
-	<div class="alert alert-danger">{{facebook.errorMsg}}</div>
+	<div class="alert alert-danger">{{facebook.errorMsg}}&nbsp <a ng-show="facebook.expired" href="/resend"><button class="btn btn-warning"  type="button" >Resend Activation Email..</button></a></div>
 	</div>
 	<div class="row show-hide-message" ng-show="google.errorMsg">
 
-	<div class="alert alert-danger">{{google.errorMsg}}</div>
+	<div class="alert alert-danger">{{google.errorMsg}}&nbsp <a ng-show="google.expired" href="/resend"><button class="btn btn-warning"  type="button" >Resend Activation Email..</button></a></div>
 	</div>
 	<div class="row show-hide-message" ng-show="twitter.errorMsg">
 
-	<div class="alert alert-danger">{{twitter.errorMsg}}</div>
+	<div class="alert alert-danger">{{twitter.errorMsg}}&nbsp <a ng-show="twitter.expired" href="/resend"><button class="btn btn-warning"  type="button" >Resend Activation Email..</button></a></div>
 	</div>

@@ -7,7 +7,7 @@ thisobj.loadme=false;
 //new view after logout
 
 $rootScope.$on('$routeChangeStart',function(){
-
+thisobj.disabled=false;
 if(Auth.isLoggedIn()){
 	//console.log('sucess');
 	thisobj.isLoggedIn=true;
@@ -36,6 +36,7 @@ if($location.hash() == '#_=_') {$location.hash(null);}
 this.facebook=function(){
 console.log($window.location.protocol);
 console.log($window.location.host);
+thisobj.disabled=true;
 $window.location=$window.location.protocol+'//' +$window.location.host+'/auth/facebook';
 };
 
@@ -43,13 +44,13 @@ $window.location=$window.location.protocol+'//' +$window.location.host+'/auth/fa
 
 
 this.google=function(){
-
+thisobj.disabled=true;
 $window.location=$window.location.protocol+'//' +$window.location.host+'/auth/google';
 };
 
 
 this.twitter=function(){
-
+thisobj.disabled=true;
 $window.location=$window.location.protocol+'//' +$window.location.host+'/auth/twitter';
 };
 
@@ -57,15 +58,18 @@ thisobj.doLogin=function(loginData)
 {
 	thisobj.loading=true;
 thisobj.failmsg=false;
+thisobj.disabled=true;
+thisobj.expired=false;
 //console.log(this.regData);
 
 Auth.login(thisobj.loginData).then(function(data){
 	//console.log(data.data.message);
 if(data.data.success){
 	thisobj.loading=false;
+	 thisobj.disabled=false;
 thisobj.successmsg=data.data.message+'.......Redirecting...';
 $timeout(function(){$location.path('/about');},1500);
-thisobj.loginData='';
+thisobj.loginData=null;
 thisobj.successmsg=false;
 
 
@@ -73,9 +77,15 @@ thisobj.successmsg=false;
 
 else{
 //thisobj.loading=false;
+if(data.data.expired){
 thisobj.failmsg=data.data.message;
-
+thisobj.expired=true;
+thisobj.successmsg=false;}
+else{
+thisobj.failmsg=data.data.message;
+thisobj.disabled=false;
 thisobj.successmsg=false;
+}
 }
 
 });
@@ -89,6 +99,7 @@ $timeout(function(){
 $location.path('/');},4000
 );
 };
+
 });
 
 
