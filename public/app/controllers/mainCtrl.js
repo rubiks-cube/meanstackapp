@@ -78,6 +78,7 @@ thisobj.successmsg=false;
 else{
 //thisobj.loading=false;
 if(data.data.expired){
+	
 thisobj.failmsg=data.data.message;
 thisobj.expired=true;
 thisobj.successmsg=false;}
@@ -85,6 +86,7 @@ else{
 thisobj.failmsg=data.data.message;
 thisobj.disabled=false;
 thisobj.successmsg=false;
+
 }
 }
 
@@ -95,9 +97,12 @@ thisobj.successmsg=false;
 thisobj.logOut=function(){
  Auth.logOut();
 $location.path('/logout');
+
 $timeout(function(){
-$location.path('/');},4000
+$location.path('/');},2000
 );
+
+
 };
 
 });

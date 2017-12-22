@@ -158,22 +158,22 @@ User.findOne({ email: req.body.email }).select('email').exec(function(err, user)
 
 router.post('/authenticate', function(req,res){ 
 User.findOne({ username: req.body.username }).select('email username password active').exec(function(err, user) { 
-if(req.body.username==null ||req.body.password==null||req.body.username==undefined){res.json({success:false,message:'missing fields'});}
+if(req.body.username==null ||req.body.password==null){res.json({success:false,message:'missing fields'}); return;}
 if (err) throw err; 
 if (!user ) { res.json({success: false, message: 'Could not authenticate user'});
-
- return;//to stop second callback 
+return;
+ //to stop second callback 
 }
  
     if(req.body.password && req.body.password !== undefined)
   { var validPassword = user.comparePassword(req.body.password);
 
    if(!validPassword ) {
-    res.json({success: false, message: 'could not authenticate password'}); }
+    res.json({success: false, message: 'could not authenticate password'});}
 
     else if(!user.active){
       res.json({success: false, message: 'Account not  activated..check your email!',expired:true}); 
-
+        
     }
     else
       {
@@ -184,7 +184,7 @@ if (!user ) { res.json({success: false, message: 'Could not authenticate user'})
 
        }
 
-    else{ res.json({success: false, message: 'no password provided'}); }﻿
+    else{ res.json({success: false, message: 'no password provided'});  }﻿
 });
 });
 
@@ -317,6 +317,185 @@ res.json({success:true,message:'link sent to:  '+user.email})
 
 });
 
+router.get('/resetusername/:email',function(req,res){
+
+User.findOne({email:req.params.email}).select('email name username').exec(function(err,user){
+
+if(err){
+ // console.log('kkk');
+res.json({success:false,message:err});
+} 
+else {
+  if(!req.params.email){
+res.json({success:false,   message:'Email not provided'});
+
+}
+
+else{
+
+ if(!user){
+res.json({success:false,message:'Email not found'});
+
+}else{
+
+   var email = {
+        from: 'Localhost staff,staff@localhost.com',
+          to: user.email,
+          subject: 'Localhost Username Request',
+           text: 'Hello'+user.name+',You recently requested your username. Please save it in your files:'+ user.username,
+         html: 'Hello<strong>'+user.name+'</strong>,<br><br>You recently requested your username. Please save it in your files:'+ user.username
+       };
+
+          client.sendMail(email, function(err, info){
+             if (err ){
+             console.log(err);
+              }
+              else {
+         console.log('Message sent: ' + info.response);
+           }
+           });
+  res.json({success:true, message:'Username has been sent to email'});
+
+      }
+}
+}
+});
+
+
+});
+
+router.put('/resetpassword',function(req,res){
+User.findOne({username:req.body.username}).select('username email active resettoken name').exec(function(err,user){
+   if(err){throw err;}
+
+
+     if(!user)
+   {
+  res.json({success:false, message: 'Username not found'});
+    }
+    else if(!user.active){
+   res.json({success:false, message:'Account not activated'});
+
+     }else{
+
+      user.resettoken=jwt.sign({username: user.username, email: user.email}, secret, { expiresIn: '5h' });
+       user.save(function(err){
+         if(err){
+          res.json({success:false, message:err});
+         }else{
+
+
+             var email = {
+        from: 'Localhost staff,staff@localhost.com',
+          to: user.email,
+          subject: 'Localhost Password Request',
+           text: 'Hello'+user.name+',You recently requested your password reset. Please click the link below to reset it: http://localhost:3000/reset/'+ user.resettoken,
+         html: 'Hello<strong>'+user.name+'</strong>,<br><br>You recently requested your password reset. Please click the link below to reset it:<a href="http://localhost:3000/reset/'+ user.resettoken+'">http://localhost:3000/reset</a>'
+       };
+
+          client.sendMail(email, function(err, info){
+             if (err ){
+             console.log(err);
+              }
+              else {
+         console.log('Message sent: ' + info.response);
+           }
+           });
+          res.json({success:true, message:'Check your email for resetting password'});
+         }
+
+       });
+
+     }
+});
+
+});
+
+
+router.get('/resetpassword/:token',function(req,res){
+User.findOne({resettoken:req.params.token}).select().exec(function(err,user){
+
+if(err) throw err;
+var token=req.params.token;
+
+jwt.verify(token,secret,function(err,decoded){
+     
+     if(err){
+      //console.log('lll');
+      res.json({success:false, message: 'password reset  link expired.'});
+      }
+  
+     else{
+
+      if(!user){
+        res.json({success:false, message:'Link has expired'});
+      }
+      else{
+       res.json({success:true, user:user});
+      }
+      }
+
+});
+
+});
+
+
+
+
+});
+
+
+router.put('/savepassword',function(req,res){
+
+User.findOne({username:req.body.username}).select('username resettoken name email password').exec(function(err,user){
+if(err)throw err;
+if(req.body.password==null || req.body.password==''){
+res.json({success:false,message:'Password has not been provided.'});
+
+
+}
+else{
+user.password=req.body.password;
+
+user.resettoken=false;
+user.save(function(err){
+if(err){
+
+  res.json({success:false,messsage:err});
+
+}else{
+ var email = {
+        from: 'Localhost staff,staff@localhost.com',
+          to: user.email,
+          subject: 'Localhost Password Reset',
+           text: 'Hello'+user.name+',This email has been sent to notify that your account password has been reset',
+         html: 'Hello<strong>'+user.name+'</strong>,<br><br>This email has been sent to notify that your account password has been reset'
+       };
+
+          client.sendMail(email, function(err, info){
+             if (err ){
+             console.log(err);
+              }
+              else {
+         console.log('Message sent: ' + info.response);
+           }
+           });
+  res.json({success:true,message:'Password has been reset!'});
+}
+
+
+
+
+});
+  
+}
+
+});
+
+
+
+
+});
 //middlewre to access token
 
 router.use(function(req,res,next){

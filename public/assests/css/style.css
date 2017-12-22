@@ -130,6 +130,10 @@ fieldset[disabled] .btn-primary.active {
     background-color: #1ee2e7;
 }
 
+.reset{
+    float: right;
+}
+
 .facebookbtn {
     padding: 20px 40px;
     border-color: #FF6347;

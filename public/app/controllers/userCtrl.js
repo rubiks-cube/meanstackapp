@@ -2,12 +2,12 @@ angular.module('userControllers',['userServices','authServices'])
 .controller('regCtrl',function($http,$location,$timeout,User){
 //this is limited to scope;
 	var thisobj=this;
-thisobj.regUser=function(regData,valid)
+thisobj.regUser=function(regData,valid,confirmed)
 {thisobj.disabled=true;
 	thisobj.loading=true;
 thisobj.failmsg=false;
 //console.log(this.regData);
-if(valid){
+if(valid && confirmed){
  User.create(thisobj.regData).then(function(data){
 	//console.log('uiii');
 	
