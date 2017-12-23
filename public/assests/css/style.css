@@ -130,9 +130,7 @@ fieldset[disabled] .btn-primary.active {
     background-color: #1ee2e7;
 }
 
-.reset{
-    float: right;
-}
+
 
 .facebookbtn {
     padding: 20px 40px;
@@ -997,3 +995,4 @@ END: LOADING ICON FOR LOGGING OUT USER
 .showmore {
     display: inline;
 }
+

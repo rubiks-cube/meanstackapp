@@ -177,9 +177,9 @@ return;
     }
     else
       {
-       var token= jwt.sign({username: user.username, email: user.email}, secret, { expiresIn: '5h' });
+       var token= jwt.sign({username: user.username, email: user.email}, secret, { expiresIn: '30s' });
 
-
+  ///also in serialse in passport sameintial token expire time
        res.json({success: true, message: 'User Authenticated', token: token}); }
 
        }
@@ -496,7 +496,7 @@ if(err){
 
 
 });
-//middlewre to access token
+//middlewre to access token  when user is logged in.// all routes that need token mustbe placed after this middleware
 
 router.use(function(req,res,next){
 
@@ -531,4 +531,22 @@ else{
 
 router.post('/me',function(req,res){
 res.send(req.decoded);
+});
+
+
+
+router.get('/renewtoken/:username', function(req,res){
+User.findOne({username:req.params.username}).select().exec(function(err,user){
+if(err) throw err;
+console.log(req.params.username);
+if(!user){res.json({success:false,message:'no user found'});}
+else{
+  var newtoken= jwt.sign({username: user.username, email: user.email}, secret, { expiresIn: '24h' });
+   console.log(user);
+
+       res.json({success: true, token: newtoken}); 
+}
+
+});
+
 });

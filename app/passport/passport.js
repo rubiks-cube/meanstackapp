@@ -20,7 +20,7 @@ module.exports=function(app,passport){
     // If account active, give user token
   //console.log(user);
   if(user.active){
-  token=jwt.sign({ username: user.username, email: user.email }, secret, { expiresIn: '5h' });}
+  token=jwt.sign({ username: user.username, email: user.email }, secret, { expiresIn: '30s' });}
   else{
     token='inactive/error';
   }

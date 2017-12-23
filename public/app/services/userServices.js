@@ -42,5 +42,10 @@ userFactory.savePassword=function(regData){
 
 	return $http.put('/api/savepassword',regData);
 }
+
+userFactory.renewSession=function(username){
+
+	return $http.get('/api/renewtoken/'+username);
+}
 return userFactory;
 });

@@ -12,6 +12,7 @@
   <!--casading stylesheets -->
     <link rel="stylesheet" type="text/css" href="assests/css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="assests/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="assests/css/style1.css">
      <!--<link rel="stylesheet" type="text/css" href="assests/css/style.css">-->
     <!-- cascading angular-->
     <script type="text/javascript" src="assests/js/angular.js"></script>
@@ -27,9 +28,12 @@
  <script type="text/javascript" src="app/controllers/emailCtrl.js"></script>
 
 
+
     <!--AngularServices-->
     <script type="text/javascript" src="app/services/userServices.js"></script>
     <script type="text/javascript" src="app/services/authServices.js"></script>
+
+
 
 
     <title>Theme Template for Bootstrap</title>
@@ -53,10 +57,11 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="/">Home</a></li>
-            <li ng-show="!main.isLoggedIn"><a href="/login">Login</a></li>
-            <li ng-show="!main.isLoggedIn"><a href="/register">Register</a></li>
-            <li ng-show="main.isLoggedIn"><a href="#" ng-click=main.logOut()>Logout</a></li>
+            <li class="{ active: isActive('/')}" ><a href="/">Home</a></li>
+            <li ng-show="main.isLoggedIn" class="{ active: isActive('/about')}" ><a href="/about">About</a></li>
+            <li ng-show="!main.isLoggedIn" class="{ active: isActive('/login')}"><a href="/login">Login</a></li>
+            <li ng-show="!main.isLoggedIn" class="{ active: isActive('/register')}" ><a href="/register">Register</a></li>
+            <li ng-show="main.isLoggedIn" class="{ active: isActive('/logout')}"><a href="#" ng-click=main.logOut()>Logout</a></li>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
               <ul class="dropdown-menu">
@@ -69,7 +74,7 @@
                 <li><a href="#">One more separated link</a></li>
               </ul>
             </li>
-            <li ng-show="main.isLoggedIn"><a href='/profile'>HI! {{main.username}}</a></li>
+            <li ng-show="main.isLoggedIn" class="{ active: isActive('/profile')}" ><a href='/profile'>HI! {{main.username}}</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -83,8 +88,37 @@
         <p>This is a template showcasing the optional theme stylesheet included in Bootstrap. Use it as a starting point to create something more unique by building on or modifying it.</p>
       </div>
 
-
+<!--current view using angular-->
      <div ng-view></div>
+
+
+<!--modal BS-->
+     <div >
+  
+
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" ng-click="main.endSession();" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">{{main.modalHeader}}</h4>
+        </div>
+        <div class="modal-body">
+          <p>{{main.modalBody}}</p>
+          <div ng-show="main.hideButton" class="dizzy-gillespie">{{main.hideButton}}</div>
+        </div>
+        <div class="modal-footer">
+          <button ng-hide="main.hideButton" type="button" ng-click="main.renewSession();" class="btn btn-primary" data-dismiss="modal">Yes</button>
+          <button ng-hide="main.hideButton" type="button"  ng-click="main.endSession();" class="btn btn-danger" data-dismiss="modal">No</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
 
 
     </div> <!-- /container -->

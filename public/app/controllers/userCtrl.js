@@ -84,7 +84,7 @@ else{
 
 })
 
-
+//custom directive for password match
 
 .directive('match',function(){
 	return{
@@ -134,7 +134,8 @@ thisobj.expired=true;
 }
 else{
 Auth.facebook($routeParams.token);
-//console.log(user);
+//console.log(user);th
+
 $location.path('/about');
 }
 
@@ -155,7 +156,7 @@ thisobj.expired=true;
 }
 else{
 Auth.google($routeParams.token);
-$location.path('/');
+$location.path('/about');
 }
 
 })

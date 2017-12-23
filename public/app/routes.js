@@ -12,7 +12,8 @@ var app=angular.module('appRoutes', ['ngRoute','authServices'])
 	})
 
 	.when('/about',{
-		templateUrl: "app/views/pages/about.html"
+		templateUrl: "app/views/pages/about.html",
+		authenticated:true
 	})
 
 	.when('/register',{
@@ -24,8 +25,7 @@ var app=angular.module('appRoutes', ['ngRoute','authServices'])
 	.when('/login',{
 		templateUrl: "app/views/pages/users/login.html",
 		authenticated:false
-       // controller:'regCtrl',
-		//controllerAs: 'register'
+       
 	})
 	.when('/logout',{
 		templateUrl: "app/views/pages/users/logout.html",
@@ -135,7 +135,7 @@ var app=angular.module('appRoutes', ['ngRoute','authServices'])
 
 	.otherwise({redirectTo:'/'});
 });
-
+//tocontrol which pages can be seen afterlogin
 app.run(['$rootScope','$location','Auth',function($rootScope,$location,Auth){
 
 $rootScope.$on('$routeChangeStart',function(event,next,current){
