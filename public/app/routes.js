@@ -1,6 +1,6 @@
 
 
-var app=angular.module('appRoutes', ['ngRoute','authServices'])
+var app=angular.module('appRoutes', ['ngRoute','authServices','userServices'])
 
 
 .config(function($routeProvider,$locationProvider){
@@ -133,17 +133,60 @@ var app=angular.module('appRoutes', ['ngRoute','authServices'])
 		
 	})
 
+	.when('/management',{
+		//console.log('kkk');
+		templateUrl: "app/views/pages/management/management.html",
+		controller:'managementCtrl',
+		controllerAs: 'management',
+		authenticated:true,
+		permission:['admin','moderator']
+      
+		
+	})
+	.when('/edit/:id',{
+		//console.log('kkk');
+		templateUrl: "app/views/pages/management/edit.html",
+		controller:'editCtrl',
+		controllerAs: 'edit',
+      authenticated:true,
+      permission:['admin','moderator']
+		
+	})
+	.when('/search',{
+		//console.log('kkk');
+		templateUrl: "app/views/pages/management/search.html",
+		controller:'managementCtrl',
+		controllerAs: 'management',
+      authenticated:true,
+      permission:['admin','moderator']
+		
+	})
+
 	.otherwise({redirectTo:'/'});
 });
+
+
+
+
 //tocontrol which pages can be seen afterlogin
-app.run(['$rootScope','$location','Auth',function($rootScope,$location,Auth){
+app.run(['$rootScope','$location','Auth','User',function($rootScope,$location,Auth,User){
 
 $rootScope.$on('$routeChangeStart',function(event,next,current){
+if(next.$$route!==undefined){
 
 if(next.$$route.authenticated==true){
 	  if(!Auth.isLoggedIn()){
        event.preventDefault();
          $location.path('/');
+	}else if(next.$$route.permission){
+		User.getPermission().then(function(data){
+          if(next.$$route.permission[0]!==data.data.permission){
+          	if(next.$$route.permission[1]!==data.data.permission){
+          		event.preventDefault();
+         $location.path('/');
+          	}
+          }
+		});
 	}
 
 }
@@ -157,6 +200,6 @@ else if(next.$$route.authenticated==false){
 
 }
 //console.log(Auth.isLoggedIn());
-	//console.log(next.$$route.authenticated);
+}	//console.log(next.$$route.authenticated);
 });
 }]);

@@ -461,7 +461,7 @@ user.resettoken=false;
 user.save(function(err){
 if(err){
 
-  res.json({success:false,messsage:err});
+  res.json({success:false,message:err});
 
 }else{
  var email = {
@@ -542,10 +542,400 @@ console.log(req.params.username);
 if(!user){res.json({success:false,message:'no user found'});}
 else{
   var newtoken= jwt.sign({username: user.username, email: user.email}, secret, { expiresIn: '24h' });
-   console.log(user);
+  // console.log(user);
 
        res.json({success: true, token: newtoken}); 
 }
+
+});
+
+});
+
+
+
+router.get('/permission',function(req,res){
+//console.log('vvv');
+User.findOne({username:req.decoded.username},function(err,user){
+if(err)throw err;
+if(!user){
+ res.json({success:false,message:'user not found'});
+}else{
+
+res.json({success:true,permission:user.permission});
+}
+
+});
+
+});
+
+
+router.get('/management',function(req,res){
+
+User.find({},function(err,users){
+  if(err)throw err;
+
+  User.findOne({username:req.decoded.username},function(err,mainuser){
+     if(err)throw err;
+    if(!mainuser){
+      res.json({success:false,message:'No user found'});
+    }else{
+        if(mainuser.permission=='admin'||mainuser.permission=='moderator'){
+
+          if(!users){
+            res.json({success:false,message:'no users'});}
+            else{
+              res.json({success:true,users: users, permission:mainuser.permission});
+            }
+          }
+
+        else{
+
+          res.json({success:false,message:'not permitted'});
+        }
+
+
+    }
+
+
+  });
+
+});
+
+});
+
+
+router.delete('/management/:username',function(req,res){
+  
+var deleteUser=req.params.username;
+User.findOne({username:req.decoded.username},function(err,mainuser){
+
+ if(err)throw err;
+    if(!mainuser){
+      res.json({success:false,message:'No user found'});
+       }else{
+
+         if(mainuser.permission!='admin'){
+        res.json({success:false,message:'Not permitted'});
+        }else{
+             User.findOneAndRemove({username:deleteUser},function(err,user){
+                 if (err) throw err;
+                 res.json({success:true});
+             });
+        }
+      }
+    
+});
+});
+//whenever querying mongodb ask for _id   but$routeparamshas  atrribute'id'
+
+router.get('/edit/:id',function(req,res){
+var editUser=req.params.id;
+
+User.findOne({username:req.decoded.username},function(err,mainuser){
+if (err)throw err;
+if(!mainuser){
+  res.json({success:false,message:'not found mainuser'});
+}else{
+  if(mainuser.permission=='admin'||mainuser.permission=='moderator' ){
+      User.findOne({_id:editUser},function(err,user){
+          if(err)throw err;
+          if(!user){
+            res.json({success:false,message:'usernot found'});
+          }else{
+             res.json({success:true,user:user});
+        }
+      });
+  }else{
+    res.json({success:false,message:'not permitted'});
+  }
+}
+
+});
+
+
+});
+
+
+
+
+
+router.put('/edit',function(req,res){
+var editUser=req.body._id;
+if(req.body.name)var newName=req.body.name;
+if(req.body.username)var newUsername=req.body.username;
+if(req.body.email)var newEmail=req.body.email;
+if(req.body.permission)var newPermission=req.body.permission;
+User.findOne({username:req.decoded.username},function(err,mainuser){
+    if(err)throw err;
+   if(!mainuser){
+    res.json({success:false,message:'not found mainuser'});
+
+      }
+    else{//@
+     if(newName){
+         if(mainuser.permission=='admin'||mainuser.permission=='moderator'){
+           User.findOne({_id:editUser},function(err,user){
+             if(err)throw err;
+             if(!user){
+              res.json({success:false,message:'no user'});
+             }else{
+              user.name=newName;
+              user.save(function(err){
+               if(err) {console.log(err);}
+               else{res.json({success:true,message:'successful name update'});}
+              });
+             }
+
+
+          });
+          }else{
+         res.json({success:false,message:'no permit'});
+          }
+       }
+
+     if(newUsername){
+           if(mainuser.permission=='admin'||mainuser.permission=='moderator'){
+            var x=false;
+            User.findOne({username:req.body.username},function(err,user){
+                
+                if(user){
+                  res.json({success:false,message:'Username already taken'});
+                  x=true;
+                }
+              });
+                User.findOne({_id:editUser},function(err,user){
+                if(err)throw err;
+             if(!user){
+              res.json({success:false,message:'no user'});
+             }else{
+              
+              user.username=newUsername;
+              if(x==false){
+              user.save(function(err){
+               if(err) {throw err;}
+               else{res.json({success:true,message:'successful username update'});}
+              });}
+             }
+
+
+             });
+
+           }else{
+            res.json({success:false,message:'no permit'});
+
+           }
+     }
+
+
+     if(newEmail){
+      
+           if(mainuser.permission=='admin'||mainuser.permission=='moderator'){
+            var y=false;
+            User.findOne({email:req.body.email},function(err,user){
+                
+                if(user){
+                  res.json({success:false,message:'Email already taken'});
+                  y=true;
+                }
+              });
+                User.findOne({_id:editUser},function(err,user){
+             if(err)throw err;
+             if(!user){
+              res.json({success:false,message:'no user'});
+             }else{
+              
+              user.email=newEmail;
+              if(y==false){
+                console.log(y);
+              user.save(function(err){
+               if(err) {console.log(err);}
+               else{res.json({success:true,message:'successful email update'});}
+              });}
+             }
+
+
+             });
+
+           }else{
+              res.json({success:false,message:'no permit'});
+
+           }
+         }
+             
+
+    if(newPermission){
+
+
+         if(mainuser.permission=='admin'||mainuser.permission=='moderator'){
+
+                 User.findOne({_id:editUser},function(err,user){
+                  if(err)throw err;
+                    if(!user){
+                   res.json({success:false,message:'no user'});
+                     }else{//pp
+
+                       //new changeto usser  permiss
+                       if(newPermission=='user'){
+                         if(user.permission=='admin'){
+
+                            if(mainuser.permission!='admin'){
+                           res.json({success:false,message:'you cannot downgrade admin'});
+                           }
+                    
+                           else{
+                          user.permission=newPermission;
+                          user.save(function(err){
+                           if(err){console.log(err);}
+
+                          else{
+                            res.json({success:true,message:'updated'});
+                            }
+                            });
+                          }
+
+                       }else{
+                       user.permission=newPermission;
+                          user.save(function(err){
+                             if(err){
+                           console.log(err);
+                               }else{
+                              res.json({success:true,message:'updated'});
+                             }
+                          });
+                       }
+
+      
+                         }
+
+                   // new change to user(end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                     
+                 if(newPermission=='moderator'){
+
+                     if(user.permission=='admin'){
+                          if(mainuser.permission!='admin'){
+                           res.json({success:false,message:'you cannot downgrade admin'});
+                           }
+                    
+                             else{
+                             user.permission=newPermission;
+                              user.save(function(err){
+                             if(err){
+                              console.log(err);
+                              }else{
+                             res.json({success:true,message:'updated'});
+                                 }
+                            });
+                           }
+
+                        } else{
+
+                          user.permission=newPermission;
+                          user.save(function(err){
+                           if(err){
+                             console.log(err);
+                             }else{
+                            res.json({success:true,message:'updated'});
+                             }
+                          });
+
+                         }
+                       }
+
+
+
+
+
+              if(newPermission=='admin'){
+
+                     if(mainuser.permission=='admin'){
+                      console.log('hh');
+                         user.permission=newPermission;
+                         user.save(function(err){
+                          if(err){
+                          console.log(err);
+                       }else{
+                        res.json({success:true,message:'updated'});
+                      }
+                       });
+
+
+                     }else{
+                      res.json({success:false,message:'you cannot downgrade admin'});
+                     }
+
+
+               }
+
+
+
+               
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    }//pp
+
+
+                   });
+              
+            }
+
+          else{
+          res.json({success:false,message:'no permit'});
+
+
+            }
+
+      }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+}//@
+
+
+
 
 });
 

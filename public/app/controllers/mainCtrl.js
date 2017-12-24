@@ -3,11 +3,12 @@ angular.module('mainController',['authServices','userServices','ngRoute'])
 var thisobj=this;
 //current nav pills
 $scope.isActive = function (viewLocation) {
-     var active = (viewLocation === $location.path());
+     var active = (viewLocation == $location.path());
      return active;
 };
 //load angularornot
 thisobj.loadme=false;
+
 //creating session
 thisobj.checkSession=function(){
 
@@ -26,10 +27,13 @@ else{
 		var base64=base64Url.replace('-','+').replace('_','/');
 		return JSON.parse($window.atob(base64));
 	}
-	var expireTime=self.parseJwt(token);
-	var timeStamp=Math.floor(Date.now()/1000);
+	var expireTime=self.parseJwt(token); //self points to window object
+	var timeStamp=Math.floor(Date.now()/1000); // 11000 when we need secs
 	var timeCheck=expireTime.exp-timeStamp;
-	//console.log(timeCheck);
+
+	//console.log(expireTime.exp);
+	//console.log(timeStamp);
+
 	if(timeCheck<=5){
        showModal(1);
      $interval.cancel(interval);
@@ -121,7 +125,7 @@ var hideModal=function(){
 $("#myModal").modal("hide");
 };
 
-//new view after logout
+//will run every time route changes
 
 $rootScope.$on('$routeChangeStart',function(){
 if(!thisobj.checkingSession) {thisobj.checkSession();}
@@ -131,11 +135,23 @@ thisobj.failmsg=false;
 if(Auth.isLoggedIn()){
 	//console.log('sucess');
 	thisobj.isLoggedIn=true;
+
 	Auth.getUser().then(function(data){
 		//console.log(data);
 		thisobj.username= data.data.username;
 		thisobj.usermail=data.data.email;
-		thisobj.loadme=true;
+User.getPermission().then(function(data){//for showing managemnt tab
+
+   if(data.data.permission=='admin'||data.data.permission=='moderator'){
+   	thisobj.authorised=true;
+   	thisobj.loadme=true;
+   	
+   }else{
+   	thisobj.loadme=true;
+   }
+});
+
+		
 
 
 	});
@@ -182,7 +198,7 @@ thisobj.doLogin=function(loginData)
 thisobj.failmsg=false;
 thisobj.disabled=true;
 thisobj.expired=false;
-//console.log(this.regData);
+
 
 Auth.login(thisobj.loginData).then(function(data){
 	//console.log(data.data.message);
@@ -191,6 +207,7 @@ if(data.data.success){
 	 thisobj.disabled=false;
 thisobj.successmsg=data.data.message+'.......Redirecting...';
 $timeout(function(){$location.path('/about');},1500);
+
 thisobj.loginData=null;
 thisobj.successmsg=false;
 thisobj.checkSession();
