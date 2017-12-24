@@ -1,1 +1,2 @@
 # meanstackapp
+# MeanApp
